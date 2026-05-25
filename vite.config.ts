@@ -1,8 +1,9 @@
 import tailwindcss from "@tailwindcss/vite";
+import typegpu from "unplugin-typegpu/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [tailwindcss()],
+  plugins: [typegpu(), tailwindcss()],
   resolve: {
     tsconfigPaths: true,
   },

@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}",
+      "name": "dev",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}

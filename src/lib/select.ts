@@ -5,6 +5,6 @@ export const selectMat3x3f = tgpu.fn(
   d.mat3x3f,
 )((whenFalse, whenTrue, condition) => {
   return whenFalse.add(
-    whenTrue.sub(whenFalse).mul(std.select(0.0, 1.0, condition)),
+    whenTrue.sub(whenFalse).mul(std.select(d.f32(0.0), d.f32(1.0), condition)),
   );
 });

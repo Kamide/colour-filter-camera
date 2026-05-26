@@ -1,6 +1,6 @@
 import { linearToSrgb, srgbToLinear } from "@typegpu/color";
 import { useRoot } from "@typegpu/react";
-import { CameraIcon, ScreenShareIcon } from "lucide-react";
+import { CameraIcon, FullscreenIcon, ScreenShareIcon } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import tgpu, { common, d, std, type TgpuRoot } from "typegpu";
 import { useContextRef } from "../hooks/gpu.ts";
@@ -170,6 +170,18 @@ export function App() {
       .catch(console.error);
   };
 
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      Promise.resolve()
+        .then(() => document.exitFullscreen())
+        .catch(console.error);
+    } else {
+      Promise.resolve(canvasRef.current)
+        .then((canvas) => canvas!.requestFullscreen())
+        .catch(console.error);
+    }
+  };
+
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-black">
       <div className="h-full w-full overflow-hidden">
@@ -197,6 +209,9 @@ export function App() {
             </option>
           ))}
         </select>
+        <Button onClick={toggleFullscreen}>
+          <FullscreenIcon aria-label="Fullscreen" size={16} />
+        </Button>
       </div>
     </div>
   );

@@ -1,0 +1,42 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient cx=".5" cy=".5" fx=".5" fy=".5" id="b" r=".5">
+      <stop offset="0" stop-color="#462c1d" />
+      <stop offset=".8" stop-color="#342e34" />
+      <stop offset="1" stop-color="#1b1b1b" />
+    </radialGradient>
+    <radialGradient cx=".5" cy=".5" fx=".5" fy=".5" id="c" r=".5">
+      <stop offset=".4" stop-opacity="0" />
+      <stop offset="1" stop-opacity=".6" />
+    </radialGradient>
+    <radialGradient cx=".5" cy=".5" fx=".5" fy=".5" id="d" r=".5">
+      <stop offset="0" stop-color="#535354" />
+      <stop offset="1" stop-color="#131c29" />
+    </radialGradient>
+    <radialGradient cx=".5" cy=".5" fx=".5" fy=".5" id="e" r=".5">
+      <stop offset="0" stop-color="#fff" />
+      <stop offset="1" stop-color="#00e87c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient cx=".5" cy=".5" fx=".5" fy=".5" id="f" r=".5">
+      <stop offset="0" stop-color="#fff" />
+      <stop offset=".055" stop-color="#ba2828" stop-opacity=".945" />
+      <stop offset="1" stop-color="#d40000" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient cx=".5" cy=".5" fx=".5" fy=".5" id="g" r=".5">
+      <stop offset="0" stop-color="#fff" />
+      <stop offset="1" stop-color="#1300ce" stop-opacity="0" />
+    </radialGradient>
+    <clipPath clipPathUnits="userSpaceOnUse" id="a">
+      <circle cx="256" cy="256" r="256" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#a)">
+    <rect fill="url(#b)" height="512" width="512" />
+    <circle cx="256" cy="256" fill="url(#c)" r="220" />
+    <circle cx="256" cy="256" fill="url(#c)" r="156" />
+    <circle cx="256" cy="256" fill="url(#d)" r="80" />
+    <circle style="mix-blend-mode:hard-light" cx="180" cy="156" fill="url(#e)" r="156" />
+    <circle style="mix-blend-mode:screen" cx="212" cy="296" fill="url(#f)" r="156" />
+    <circle style="mix-blend-mode:color-dodge" cx="348" cy="356" fill="url(#g)" r="156" />
+  </g>
+</svg>

@@ -18,5 +18,10 @@
     "types": ["node", "babel__core"],
     "verbatimModuleSyntax": true
   },
-  "include": ["vite.config.ts", "eslint.config.js", ".prettierrc.ts"]
+  "include": [
+    "vite.config.ts",
+    "pwa-assets.config.ts",
+    "eslint.config.js",
+    ".prettierrc.ts"
+  ]
 }

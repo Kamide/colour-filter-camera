@@ -1,0 +1,203 @@
+import { linearToSrgb, srgbToLinear } from "@typegpu/color";
+import { useRoot } from "@typegpu/react";
+import { CameraIcon, ScreenShareIcon } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import tgpu, { common, d, std, type TgpuRoot } from "typegpu";
+import { useContextRef } from "../hooks/gpu.ts";
+import { cvd } from "../lib/cvd.ts";
+import { identityVec3f } from "../lib/identity.ts";
+import { Button } from "./button.tsx";
+import { Spacer } from "./spacer.tsx";
+
+const filterLabelToFnMap = {
+  Passthrough: identityVec3f,
+  "Protanopia Simulation": cvd.simulation.protanopia,
+  "Deuteranopia Simulation": cvd.simulation.deuteranopia,
+  "Tritanopia Simulation": cvd.simulation.tritanopia,
+  "Protanopia Daltonization": cvd.daltonization.protanopia,
+  "Deuteranopia Daltonization": cvd.daltonization.deuteranopia,
+  "Tritanopia Daltonization": cvd.daltonization.tritanopia,
+};
+
+type FilterLabel = keyof typeof filterLabelToFnMap;
+
+function useResources(root: TgpuRoot, filter: FilterLabel) {
+  "use no memo";
+
+  const sampler = useMemo(
+    () => root.createSampler({ magFilter: "linear", minFilter: "linear" }),
+    [root],
+  );
+
+  const uvTransform = useMemo(
+    () => root.createUniform(d.mat2x2f, d.mat2x2f.identity()),
+    [root],
+  );
+
+  const layout = useMemo(
+    () =>
+      tgpu.bindGroupLayout({
+        inputTexture: { externalTexture: d.textureExternal() },
+      }),
+    [],
+  );
+
+  const fragment = useMemo(() => {
+    const transform = filterLabelToFnMap[filter];
+
+    return tgpu.fragmentFn({
+      in: { uv: d.vec2f },
+      out: d.vec4f,
+    })(({ uv }) => {
+      const position = uvTransform.$.mul(uv.sub(0.5)).add(0.5);
+      const srgb = std.textureSampleBaseClampToEdge(
+        layout.$.inputTexture,
+        sampler.$,
+        position,
+      );
+      const linear = srgbToLinear(srgb.rgb);
+      const transformed = transform(linear);
+      return d.vec4f(linearToSrgb(transformed), srgb.a);
+    });
+  }, [filter, layout, sampler, uvTransform]);
+
+  const renderPipeline = useMemo(
+    () =>
+      root.createRenderPipeline({
+        vertex: common.fullScreenTriangle,
+        fragment,
+      }),
+    [fragment, root],
+  );
+
+  return {
+    layout,
+    renderPipeline,
+  };
+}
+
+export function App() {
+  const root = useRoot();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const contextRef = useContextRef(root, canvasRef);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [filter, setFilter] = useState<FilterLabel>("Passthrough");
+  const { layout, renderPipeline } = useResources(root, filter);
+
+  const videoRefCallback = (video: HTMLVideoElement | null) => {
+    if (video == null) {
+      stopVideoSource();
+    }
+
+    videoRef.current = video;
+
+    if (video == null) {
+      return;
+    }
+
+    let currentSize: { width: number; height: number } | null = null;
+
+    const onVideoFrame = (_: number, metadata: VideoFrameCallbackMetadata) => {
+      const canvas = canvasRef.current;
+      const context = contextRef.current;
+
+      if (canvas != null && context != null && video.readyState >= 2) {
+        const { width, height } = metadata;
+
+        if (
+          currentSize == null ||
+          currentSize.width !== width ||
+          currentSize.height !== height
+        ) {
+          canvas.width = width;
+          canvas.height = height;
+          currentSize = { width, height };
+        }
+
+        const bindGroup = root.createBindGroup(layout, {
+          inputTexture: root.device.importExternalTexture({ source: video }),
+        });
+
+        renderPipeline
+          .with(bindGroup)
+          .withColorAttachment({ view: context })
+          .draw(3);
+      }
+
+      videoFrameId = video.requestVideoFrameCallback(onVideoFrame);
+    };
+
+    let videoFrameId = video.requestVideoFrameCallback(onVideoFrame);
+
+    return () => {
+      video.cancelVideoFrameCallback(videoFrameId);
+    };
+  };
+
+  const stopVideoSource = () => {
+    const video = videoRef.current;
+
+    if (video == null) {
+      return { srcObject: null };
+    }
+
+    const currentSource = video.srcObject;
+
+    if (currentSource instanceof MediaStream) {
+      for (const track of currentSource.getTracks()) {
+        track.stop();
+      }
+    }
+
+    return video;
+  };
+
+  const startScreenShare = () => {
+    navigator.mediaDevices
+      .getDisplayMedia({ video: { frameRate: { ideal: 60 } } })
+      .then((nextSource) => {
+        stopVideoSource().srcObject = nextSource;
+      })
+      .catch(console.error);
+  };
+
+  const startCamera = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: { frameRate: { ideal: 60 } } })
+      .then((nextSource) => {
+        stopVideoSource().srcObject = nextSource;
+      })
+      .catch(console.error);
+  };
+
+  return (
+    <div className="relative h-screen w-screen overflow-hidden bg-black">
+      <div className="h-full w-full overflow-hidden">
+        <canvas ref={canvasRef} className="h-full w-full object-contain" />
+        <video ref={videoRefCallback} autoPlay hidden playsInline />
+      </div>
+      <div className="absolute bottom-0 flex w-full gap-2 p-4">
+        <Button onClick={startScreenShare}>
+          <ScreenShareIcon aria-label="Screen Share" size={16} />
+        </Button>
+        <Button onClick={startCamera}>
+          <CameraIcon aria-label="Camera" size={16} />
+        </Button>
+        <Spacer />
+        <select
+          className="field-sizing-content cursor-pointer rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-white backdrop-blur-2xl backdrop-invert-50 transition-opacity hover:opacity-80 active:opacity-70"
+          value={filter}
+          onChange={(event) => {
+            setFilter(event.target.value as FilterLabel);
+          }}
+        >
+          {Object.keys(filterLabelToFnMap).map((filter) => (
+            <option key={filter} value={filter}>
+              {filter}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}

@@ -16,11 +16,16 @@ export default defineConfig({
       // language=file-reference
       includeAssets: ["logo.svg"],
       registerType: "autoUpdate",
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      },
       manifest: {
         id: "colour-filter-camera",
         name: "Colour Filter Camera",
         short_name: "Colour Filter Camera",
         description: "Colour Filter Camera",
+        theme_color: "#000",
+        background_color: "#fff",
         icons: [
           {
             // language=file-reference

@@ -183,12 +183,12 @@ export function App() {
   };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-black">
+    <div className="relative h-svh w-svw overflow-hidden bg-black">
       <div className="h-full w-full overflow-hidden">
         <canvas ref={canvasRef} className="h-full w-full object-contain" />
         <video ref={videoRefCallback} autoPlay hidden playsInline />
       </div>
-      <div className="absolute bottom-0 flex w-full gap-2 p-4">
+      <div className="absolute bottom-0 flex w-full gap-2 pt-4 px-safe-offset-4 pb-safe-offset-4">
         <Button onClick={startScreenShare}>
           <ScreenShareIcon aria-label="Screen Share" size={16} />
         </Button>
@@ -198,7 +198,7 @@ export function App() {
         <Spacer />
         <select
           aria-label="Filter"
-          className="field-sizing-content cursor-pointer rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-white backdrop-blur-2xl backdrop-invert-50 transition-opacity hover:opacity-80 active:opacity-70"
+          className="field-sizing-content cursor-pointer appearance-none rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-white backdrop-blur-2xl backdrop-invert-50 transition-opacity hover:opacity-80 active:opacity-70"
           value={filter}
           onChange={(event) => {
             setFilter(event.target.value as FilterLabel);

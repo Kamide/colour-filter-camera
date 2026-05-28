@@ -17,7 +17,7 @@ export default defineConfig({
       includeAssets: ["logo.svg"],
       registerType: "autoUpdate",
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+        globPatterns: ["**/*.{js,css,html,png,svg,ico,woff2}"],
       },
       manifest: {
         id: "colour-filter-camera",

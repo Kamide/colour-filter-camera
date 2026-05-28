@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "tailwindcss-safe-area";
+@import "@fontsource-variable/montserrat";
+
+@theme inline {
+  --font-sans: "Montserrat Variable", sans-serif;
+}

@@ -19,6 +19,7 @@
     "type-check:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
+    "@fontsource-variable/montserrat": "^5.2.8",
     "@typegpu/color": "^0.11.0",
     "@typegpu/react": "^0.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",

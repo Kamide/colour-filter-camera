@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from "react";
 import tgpu, { common, d, std, type TgpuRoot } from "typegpu";
 import { useContextRef } from "../hooks/gpu.ts";
 import { cvd } from "../lib/cvd.ts";
+import * as grayscale from "../lib/grayscale.ts";
 import { identityVec3f } from "../lib/identity.ts";
 import { Button } from "./button.tsx";
 import { Spacer } from "./spacer.tsx";
@@ -17,6 +18,8 @@ const filterLabelToFnMap = {
   "Protanopia Daltonization": cvd.daltonization.protanopia,
   "Deuteranopia Daltonization": cvd.daltonization.deuteranopia,
   "Tritanopia Daltonization": cvd.daltonization.tritanopia,
+  "Rec. 601 Grayscale": grayscale.rec601,
+  "Rec. 709 Grayscale": grayscale.rec709,
 };
 
 type FilterLabel = keyof typeof filterLabelToFnMap;

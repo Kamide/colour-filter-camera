@@ -23,7 +23,8 @@ export default defineConfig({
         id: "colour-filter-camera",
         name: "Colour Filter Camera",
         short_name: "Colour Filter Camera",
-        description: "Colour Filter Camera",
+        description:
+          "Colour Filter Camera lets you apply colour filters to your camera or screen feed in real time. Use it to select distinct colours by simulating colour vision deficiencies, enhance colour distinction via daltonization, simulate night light mode, or just have fun with visual effects.",
         theme_color: "#000",
         background_color: "#fff",
         icons: [

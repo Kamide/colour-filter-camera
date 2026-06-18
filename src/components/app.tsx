@@ -7,6 +7,7 @@ import { useContextRef } from "../hooks/gpu.ts";
 import { cvd } from "../lib/cvd.ts";
 import * as grayscale from "../lib/grayscale.ts";
 import { identityVec3f } from "../lib/identity.ts";
+import { temperatureFn } from "../lib/temperature.ts";
 import { Button } from "./button.tsx";
 import { Spacer } from "./spacer.tsx";
 
@@ -20,6 +21,8 @@ const filterLabelToFnMap = {
   "Tritanopia Daltonization": cvd.daltonization.tritanopia,
   "Rec. 601 Grayscale": grayscale.rec601,
   "Rec. 709 Grayscale": grayscale.rec709,
+  "Incandescent (2700K)": temperatureFn(2700),
+  "Fluorescent (3500K)": temperatureFn(3500),
 };
 
 type FilterLabel = keyof typeof filterLabelToFnMap;

@@ -15,4 +15,4 @@ npm ci
 npm run dev
 ```
 
-WebGPU requires a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts). To test on your phone on the same network, use [Chrome's port forwarding settings](chrome://inspect/#devices) to forward the dev server port (5173).
+This app uses WebGPU which requires a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts). To test the app on your phone on the same network, use Chrome's port forwarding settings (`chrome://inspect/#devices`) to forward the dev server port (5173).

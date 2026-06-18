@@ -160,8 +160,12 @@ export function App() {
   };
 
   const startScreenShare = () => {
-    navigator.mediaDevices
-      .getDisplayMedia({ video: { frameRate: { ideal: 60 } } })
+    Promise.resolve()
+      .then(() =>
+        navigator.mediaDevices.getDisplayMedia({
+          video: { frameRate: { ideal: 60 } },
+        }),
+      )
       .then((nextSource) => {
         stopVideoSource().srcObject = nextSource;
       })

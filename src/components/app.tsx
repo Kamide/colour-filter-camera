@@ -194,7 +194,7 @@ export function App() {
   };
 
   return (
-    <div className="relative h-svh w-svw overflow-hidden bg-black">
+    <div className="relative h-svh w-svw overflow-hidden">
       <div className="h-full w-full overflow-hidden">
         <canvas ref={canvasRef} className="h-full w-full object-contain" />
         <video ref={videoRefCallback} autoPlay hidden playsInline />

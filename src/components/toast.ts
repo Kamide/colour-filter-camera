@@ -1,7 +1,12 @@
-export function errorMessageOf(error: unknown) {
+function cn(className: string) {
+  return className;
+}
+
+function errorMessageOf(error: unknown) {
   for (let i = 0; i < 2; i++) {
     try {
       console.error(error);
+
       return error instanceof Error
         ? error.message
         : typeof error === "object"
@@ -12,34 +17,56 @@ export function errorMessageOf(error: unknown) {
       error = next;
     }
   }
+
   return "An unknown error occurred";
 }
 
+function getToastContainer() {
+  let container = document.querySelector<HTMLElement>("[data-toast-container]");
+
+  if (container == null) {
+    container = document.createElement("div");
+    container.dataset.toastContainer = "true";
+    container.className = cn(
+      "pointer-events-none absolute inset-0 z-1 space-y-2 overflow-auto p-safe-offset-4 text-center text-balance",
+    );
+
+    document.body.appendChild(container);
+  }
+
+  return container;
+}
+
 export function createErrorToast(error: unknown) {
-  const p = document.createElement("p");
-  p.role = "status";
-  p.ariaLive = "polite";
-  p.ariaAtomic = "true";
-  p.dataset.toast = "true";
-  p.className =
-    "absolute top-safe-offset-4 left-1/2 -translate-x-1/2 translate-y-[calc(var(--toast-index)*10*var(--spacing))] rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-white opacity-0 backdrop-blur-2xl backdrop-invert-50";
-  p.style.setProperty(
-    "--toast-index",
-    String(document.querySelectorAll("[data-toast='true']").length),
+  const toast = document.createElement("p");
+  toast.role = "status";
+  toast.ariaLive = "polite";
+  toast.ariaAtomic = "true";
+  toast.dataset.toast = "true";
+  toast.className = cn(
+    "pointer-events-auto mx-auto w-fit rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium opacity-0 backdrop-blur-2xl backdrop-invert-50",
   );
-  p.textContent = errorMessageOf(error);
+  toast.textContent = errorMessageOf(error);
 
-  document.body.appendChild(p);
+  const container = getToastContainer();
+  container.appendChild(toast);
 
-  void p
+  void toast
     .animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 })
     .finished.then(() => {
-      p.classList.remove("opacity-0");
+      toast.classList.remove("opacity-0");
       return new Promise((resolve) => setTimeout(resolve, 2500));
     })
     .then(
       () =>
-        p.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200 }).finished,
+        toast.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200 })
+          .finished,
     )
-    .then(() => p.remove());
+    .then(() => {
+      toast.remove();
+
+      if (!container.querySelector("[data-toast]")) {
+        container.remove();
+      }
+    });
 }

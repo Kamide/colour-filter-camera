@@ -24,7 +24,7 @@
     "@typegpu/react": "^0.11.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "lucide-react": "^1.20.0",
+    "lucide-react": "^1.21.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "typegpu": "^0.11.8"

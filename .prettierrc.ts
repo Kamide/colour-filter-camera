@@ -16,6 +16,7 @@ const sortImports: SortImports = {
 const tailwindcss: Tailwindcss = {
   // language=file-reference
   tailwindStylesheet: "./src/index.css",
+  tailwindFunctions: ["cn"],
 };
 
 export default {

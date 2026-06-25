@@ -83,11 +83,18 @@ function useResources(root: TgpuRoot, filter: FilterLabel) {
   };
 }
 
+type Size = {
+  width: number;
+  height: number;
+};
+
 export function App() {
   const root = useRoot();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useContextRef(root, canvasRef);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const sizeRef = useRef<Size>({ width: 0, height: 0 });
   const [filter, setFilter] = useState<FilterLabel>("Passthrough");
   const { layout, renderPipeline } = useResources(root, filter);
 
@@ -102,23 +109,23 @@ export function App() {
       return;
     }
 
-    let currentSize: { width: number; height: number } | null = null;
+    const size = sizeRef.current;
 
-    const onVideoFrame = (_: number, metadata: VideoFrameCallbackMetadata) => {
+    const onVideoFrame = (_: number, metadata: Size) => {
       const canvas = canvasRef.current;
       const context = contextRef.current;
 
       if (canvas != null && context != null && video.readyState >= 2) {
         const { width, height } = metadata;
 
-        if (
-          currentSize == null ||
-          currentSize.width !== width ||
-          currentSize.height !== height
-        ) {
+        if (size.width !== width) {
+          size.width = width;
           canvas.width = width;
+        }
+
+        if (size.height !== height) {
+          size.height = height;
           canvas.height = height;
-          currentSize = { width, height };
         }
 
         const bindGroup = root.createBindGroup(layout, {
@@ -131,13 +138,22 @@ export function App() {
           .draw(3);
       }
 
-      videoFrameId = video.requestVideoFrameCallback(onVideoFrame);
+      frameRef.current = video.requestVideoFrameCallback(onVideoFrame);
     };
 
-    let videoFrameId = video.requestVideoFrameCallback(onVideoFrame);
+    if (video.srcObject != null) {
+      onVideoFrame(0, size);
+    } else {
+      frameRef.current = video.requestVideoFrameCallback(onVideoFrame);
+    }
 
     return () => {
-      video.cancelVideoFrameCallback(videoFrameId);
+      if (frameRef.current == null) {
+        return;
+      }
+
+      video.cancelVideoFrameCallback(frameRef.current);
+      frameRef.current = null;
     };
   };
 

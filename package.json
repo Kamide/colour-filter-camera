@@ -15,8 +15,8 @@
     "lint:fix": "eslint --fix .",
     "preview": "vite preview",
     "preview:host": "vite preview --host",
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch"
+    "type-check": "tsc --build",
+    "type-check:watch": "tsc --build --watch"
   },
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.2.8",

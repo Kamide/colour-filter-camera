@@ -1,0 +1,42 @@
+@reference "tailwindcss";
+
+.select {
+  @apply field-sizing-content min-w-12.5 cursor-pointer appearance-none overflow-hidden rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-ellipsis backdrop-blur-2xl backdrop-invert-50 transition-opacity hover:opacity-80 active:opacity-70;
+}
+
+@supports (appearance: base-select) {
+  .select {
+    appearance: base-select;
+
+    &::picker-icon {
+      display: none;
+    }
+
+    &::picker(select) {
+      @apply bottom-2 rounded-xl border border-white/10 bg-black/50 p-1 text-xs text-white/70 backdrop-blur-2xl backdrop-invert-50;
+
+      appearance: base-select;
+      right: calc(anchor(right) - var(--spacing) * 14.5);
+    }
+
+    selectedcontent {
+      @apply truncate;
+    }
+
+    option {
+      @apply flex cursor-pointer rounded-lg px-3 py-2 duration-150;
+
+      &::checkmark {
+        display: none;
+      }
+
+      &:hover {
+        @apply bg-white/10 text-white;
+      }
+
+      &:checked {
+        @apply border border-white/10 bg-white/10 text-white;
+      }
+    }
+  }
+}

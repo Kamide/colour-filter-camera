@@ -9,6 +9,7 @@ import * as grayscale from "../lib/grayscale.ts";
 import { identityVec3f } from "../lib/identity.ts";
 import { temperatureFn } from "../lib/temperature.ts";
 import { Button } from "./button.tsx";
+import { Select } from "./select.tsx";
 import { Spacer } from "./spacer.tsx";
 import { createErrorToast } from "./toast.ts";
 
@@ -223,20 +224,12 @@ export function App() {
           <CameraIcon aria-label="Camera" size={16} />
         </Button>
         <Spacer />
-        <select
+        <Select
           aria-label="Filter"
-          className="field-sizing-content min-w-12.5 cursor-pointer appearance-none overflow-hidden rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-ellipsis backdrop-blur-2xl backdrop-invert-50 transition-opacity hover:opacity-80 active:opacity-70"
-          value={filter}
-          onChange={(event) => {
-            setFilter(event.target.value as FilterLabel);
-          }}
-        >
-          {Object.keys(filterLabelToFnMap).map((filter) => (
-            <option key={filter} value={filter}>
-              {filter}
-            </option>
-          ))}
-        </select>
+          options={Object.keys(filterLabelToFnMap) as FilterLabel[]}
+          selected={filter}
+          onChange={setFilter}
+        />
         <Button onClick={toggleFullscreen}>
           <FullscreenIcon aria-label="Fullscreen" size={16} />
         </Button>

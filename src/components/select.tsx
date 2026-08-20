@@ -13,10 +13,10 @@ export type OptionChildren<T> = FC<{
 
 export type SelectProps<T> = Omit<
   ComponentProps<"select">,
-  "selected" | "onChange"
+  "value" | "onChange"
 > & {
   options: T[];
-  selected?: T;
+  value?: T;
   onChange?: (option: T) => void;
   getOptionValue?: (option: T) => OptionValue;
   getOptionChildren?: OptionChildren<T>;
@@ -33,7 +33,7 @@ export const Select = <T,>({
   getOptionValue = defaultGetOptionValue,
   getOptionChildren: Render = defaultGetOptionChildren,
   className,
-  selected,
+  value,
   onChange,
   ref,
   ...props
@@ -58,7 +58,7 @@ export const Select = <T,>({
     <select
       {...props}
       className={`${styles.select} ${className ?? ""}`}
-      selected={selected === undefined ? undefined : getOptionValue(selected)}
+      value={value === undefined ? undefined : getOptionValue(value)}
       onChange={
         typeof onChange === "function"
           ? (event) => {

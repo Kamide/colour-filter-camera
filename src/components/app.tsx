@@ -227,7 +227,7 @@ export function App() {
         <Select
           aria-label="Filter"
           options={Object.keys(filterLabelToFnMap) as FilterLabel[]}
-          selected={filter}
+          value={filter}
           onChange={setFilter}
         />
         <Button onClick={toggleFullscreen}>

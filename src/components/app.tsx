@@ -23,8 +23,15 @@ const filterLabelToFnMap = {
   "Tritanopia Daltonization": cvd.daltonization.tritanopia,
   "Rec. 601 Grayscale": grayscale.rec601,
   "Rec. 709 Grayscale": grayscale.rec709,
-  "Incandescent (2700K)": temperatureFn(2700),
-  "Fluorescent (3500K)": temperatureFn(3500),
+  "1900 K (Candle)": temperatureFn(1900),
+  "2300 K (Warm Incandescent)": temperatureFn(2300),
+  "2700 K (Incandescent)": temperatureFn(2700),
+  "3400 K (Halogen)": temperatureFn(3400),
+  "4200 K (Fluorescent)": temperatureFn(4200),
+  "5003 K (CIE D50)": temperatureFn(5003),
+  "5503 K (CIE D55)": temperatureFn(5503),
+  "7504 K (CIE D75)": temperatureFn(7504),
+  "9305 K (CIE D93)": temperatureFn(9305),
 };
 
 type FilterLabel = keyof typeof filterLabelToFnMap;

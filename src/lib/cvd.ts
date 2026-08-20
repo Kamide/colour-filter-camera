@@ -1,12 +1,6 @@
 import tgpu, { d, std } from "typegpu";
+import { flat, type Mat3x3f, type Vec3f } from "./matrix";
 import { selectMat3x3f } from "./select";
-
-type Vec3f = [number, number, number];
-type Mat3x3f = [Vec3f, Vec3f, Vec3f];
-
-function flat(matrix: Mat3x3f) {
-  return matrix.flat() as [...Vec3f, ...Vec3f, ...Vec3f];
-}
 
 function brettel1997Params(
   separationPlaneNormal: Vec3f,

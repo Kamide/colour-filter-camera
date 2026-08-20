@@ -44,7 +44,7 @@ export function createErrorToast(error: unknown) {
   toast.ariaAtomic = "true";
   toast.dataset.toast = "true";
   toast.className = cn(
-    "pointer-events-auto mx-auto w-fit rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium opacity-0 backdrop-blur-2xl backdrop-invert-50",
+    "pointer-events-auto mx-auto w-fit rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium opacity-0 backdrop-invert-50",
   );
   toast.textContent = errorMessageOf(error);
 

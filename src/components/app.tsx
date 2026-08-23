@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useFilter } from "../hooks/filter.ts";
 import { useContextRef } from "../hooks/gpu.ts";
 import { filterLabels, type FilterLabel } from "../lib/filter.ts";
+import { getFps } from "../lib/fps.ts";
 import { Button } from "./button.tsx";
 import { Select } from "./select.tsx";
 import { Spacer } from "./spacer.tsx";
@@ -102,10 +103,10 @@ export function App() {
   };
 
   const startScreenShare = () => {
-    Promise.resolve()
-      .then(() =>
+    getFps()
+      .then((fps) =>
         navigator.mediaDevices.getDisplayMedia({
-          video: { frameRate: { ideal: 60 } },
+          video: { frameRate: { ideal: fps } },
         }),
       )
       .then((nextSource) => {
@@ -115,8 +116,12 @@ export function App() {
   };
 
   const startCamera = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: { frameRate: { ideal: 60 } } })
+    getFps()
+      .then((fps) =>
+        navigator.mediaDevices.getUserMedia({
+          video: { frameRate: { ideal: fps } },
+        }),
+      )
       .then((nextSource) => {
         stopVideoSource().srcObject = nextSource;
       })

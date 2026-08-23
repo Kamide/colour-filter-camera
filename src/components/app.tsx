@@ -1,98 +1,13 @@
-import { linearToSrgb, srgbToLinear } from "@typegpu/color";
 import { useRoot } from "@typegpu/react";
 import { CameraIcon, FullscreenIcon, ScreenShareIcon } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
-import tgpu, { common, d, std, type TgpuRoot } from "typegpu";
+import { useRef, useState } from "react";
+import { useFilter } from "../hooks/filter.ts";
 import { useContextRef } from "../hooks/gpu.ts";
-import { cvd } from "../lib/cvd.ts";
-import * as grayscale from "../lib/grayscale.ts";
-import { identityVec3f } from "../lib/identity.ts";
-import { temperatureFn } from "../lib/temperature.ts";
+import { filterLabels, type FilterLabel } from "../lib/filter.ts";
 import { Button } from "./button.tsx";
 import { Select } from "./select.tsx";
 import { Spacer } from "./spacer.tsx";
 import { createErrorToast } from "./toast.ts";
-
-const filterLabelToFnMap = {
-  Passthrough: identityVec3f,
-  "Protanopia Simulation": cvd.simulation.protanopia,
-  "Deuteranopia Simulation": cvd.simulation.deuteranopia,
-  "Tritanopia Simulation": cvd.simulation.tritanopia,
-  "Protanopia Daltonization": cvd.daltonization.protanopia,
-  "Deuteranopia Daltonization": cvd.daltonization.deuteranopia,
-  "Tritanopia Daltonization": cvd.daltonization.tritanopia,
-  "Average Grayscale": grayscale.average,
-  "Lightness Grayscale": grayscale.lightness,
-  "Rec. 601 Grayscale": grayscale.rec601,
-  "Rec. 709 Grayscale": grayscale.rec709,
-  "Rec. 2020 Grayscale": grayscale.rec2020,
-  "1900 K (Candle)": temperatureFn(1900),
-  "2300 K (Warm Incandescent)": temperatureFn(2300),
-  "2700 K (Incandescent)": temperatureFn(2700),
-  "3400 K (Halogen)": temperatureFn(3400),
-  "4200 K (Fluorescent)": temperatureFn(4200),
-  "5003 K (CIE D50)": temperatureFn(5003),
-  "5503 K (CIE D55)": temperatureFn(5503),
-  "7504 K (CIE D75)": temperatureFn(7504),
-  "9305 K (CIE D93)": temperatureFn(9305),
-};
-
-type FilterLabel = keyof typeof filterLabelToFnMap;
-
-function useResources(root: TgpuRoot, filter: FilterLabel) {
-  "use no memo";
-
-  const sampler = useMemo(
-    () => root.createSampler({ magFilter: "linear", minFilter: "linear" }),
-    [root],
-  );
-
-  const uvTransform = useMemo(
-    () => root.createUniform(d.mat2x2f, d.mat2x2f.identity()),
-    [root],
-  );
-
-  const layout = useMemo(
-    () =>
-      tgpu.bindGroupLayout({
-        inputTexture: { externalTexture: d.textureExternal() },
-      }),
-    [],
-  );
-
-  const fragment = useMemo(() => {
-    const transform = filterLabelToFnMap[filter];
-
-    return tgpu.fragmentFn({
-      in: { uv: d.vec2f },
-      out: d.vec4f,
-    })(({ uv }) => {
-      const position = uvTransform.$.mul(uv.sub(0.5)).add(0.5);
-      const srgb = std.textureSampleBaseClampToEdge(
-        layout.$.inputTexture,
-        sampler.$,
-        position,
-      );
-      const linear = srgbToLinear(srgb.rgb);
-      const transformed = transform(linear);
-      return d.vec4f(linearToSrgb(transformed), srgb.a);
-    });
-  }, [filter, layout, sampler, uvTransform]);
-
-  const renderPipeline = useMemo(
-    () =>
-      root.createRenderPipeline({
-        vertex: common.fullScreenTriangle,
-        fragment,
-      }),
-    [fragment, root],
-  );
-
-  return {
-    layout,
-    renderPipeline,
-  };
-}
 
 type Size = {
   width: number;
@@ -107,7 +22,7 @@ export function App() {
   const frameRef = useRef<number | null>(null);
   const sizeRef = useRef<Size>({ width: 0, height: 0 });
   const [filter, setFilter] = useState<FilterLabel>("Passthrough");
-  const { layout, renderPipeline } = useResources(root, filter);
+  const { layout, renderPipeline } = useFilter(root, filter);
 
   const videoRefCallback = (video: HTMLVideoElement | null) => {
     if (video == null) {
@@ -236,7 +151,7 @@ export function App() {
         <Spacer />
         <Select
           aria-label="Filter"
-          options={Object.keys(filterLabelToFnMap) as FilterLabel[]}
+          options={filterLabels}
           value={filter}
           onChange={setFilter}
         />

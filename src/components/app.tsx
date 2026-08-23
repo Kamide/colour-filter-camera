@@ -15,7 +15,7 @@ type Size = {
   height: number;
 };
 
-export function App() {
+export const App = () => {
   const root = useRoot();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useContextRef(root, canvasRef);
@@ -142,8 +142,8 @@ export function App() {
 
   return (
     <div className="relative h-svh w-svw overflow-hidden">
-      <div className="h-full w-full overflow-hidden">
-        <canvas ref={canvasRef} className="h-full w-full object-contain" />
+      <div className="size-full overflow-hidden">
+        <canvas ref={canvasRef} className="size-full object-contain" />
         <video ref={videoRefCallback} autoPlay hidden playsInline />
       </div>
       <div className="absolute bottom-0 flex w-full gap-2 overflow-auto pt-4 px-safe-offset-4 pb-safe-offset-4">
@@ -166,4 +166,4 @@ export function App() {
       </div>
     </div>
   );
-}
+};

@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import js from "@eslint/js";
+import betterTailwindcss from "eslint-plugin-better-tailwindcss";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import { defineConfig, includeIgnoreFile } from "eslint/config";
@@ -18,6 +19,7 @@ export default defineConfig([
       ts.configs.recommendedTypeChecked,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
+      betterTailwindcss.configs.recommended,
     ],
     languageOptions: {
       globals: globals.browser,
@@ -25,6 +27,12 @@ export default defineConfig([
         // language=file-reference
         project: ["./tsconfig.app.json", "./tsconfig.node.json"],
         tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    settings: {
+      "better-tailwindcss": {
+        // language=file-reference
+        entryPoint: "./src/index.css",
       },
     },
     rules: {
@@ -37,6 +45,7 @@ export default defineConfig([
           reportUsedIgnorePattern: true,
         },
       ],
+      "better-tailwindcss/enforce-consistent-line-wrapping": "off",
     },
   },
 ]);

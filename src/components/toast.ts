@@ -1,8 +1,6 @@
-function cn(className: string) {
-  return className;
-}
+import { cn } from "../lib/tailwind";
 
-function errorMessageOf(error: unknown) {
+const errorMessageOf = (error: unknown) => {
   for (let i = 0; i < 2; i++) {
     try {
       console.error(error);
@@ -19,9 +17,9 @@ function errorMessageOf(error: unknown) {
   }
 
   return "An unknown error occurred";
-}
+};
 
-function getToastContainer() {
+const getToastContainer = () => {
   let container = document.querySelector<HTMLElement>("[data-toast-container]");
 
   if (container == null) {
@@ -35,16 +33,16 @@ function getToastContainer() {
   }
 
   return container;
-}
+};
 
-export function createErrorToast(error: unknown) {
+export const createErrorToast = (error: unknown) => {
   const toast = document.createElement("p");
   toast.role = "status";
   toast.ariaLive = "polite";
   toast.ariaAtomic = "true";
   toast.dataset.toast = "true";
   toast.className = cn(
-    "pointer-events-auto mx-auto w-fit rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium opacity-0 backdrop-invert-50",
+    "pointer-events-auto mx-auto w-fit rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium opacity-0 backdrop-blur-2xl backdrop-contrast-50",
   );
   toast.textContent = errorMessageOf(error);
 
@@ -69,4 +67,4 @@ export function createErrorToast(error: unknown) {
         container.remove();
       }
     });
-}
+};

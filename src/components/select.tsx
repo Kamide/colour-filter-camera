@@ -1,4 +1,5 @@
 import type { ComponentProps, FC, JSX } from "react";
+import { cn } from "../lib/tailwind";
 import styles from "./select.module.css";
 
 export type OptionValue = Exclude<
@@ -57,7 +58,7 @@ export const Select = <T,>({
   return (
     <select
       {...props}
-      className={`${styles.select} ${className ?? ""}`}
+      className={cn(styles.select, className)}
       value={value === undefined ? undefined : getOptionValue(value)}
       onChange={
         typeof onChange === "function"

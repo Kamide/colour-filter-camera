@@ -2,7 +2,7 @@
 @reference "tailwindcss-safe-area";
 
 .select {
-  @apply field-sizing-content min-w-12.5 cursor-pointer appearance-none overflow-hidden rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-ellipsis backdrop-invert-50 transition-opacity hover:opacity-80 active:opacity-70;
+  @apply field-sizing-content min-w-12.5 cursor-pointer appearance-none overflow-hidden rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-ellipsis backdrop-blur-2xl backdrop-contrast-50 transition-opacity hover:opacity-80 active:opacity-70;
 }
 
 @supports (appearance: base-select) {
@@ -14,7 +14,7 @@
     }
 
     &::picker(select) {
-      @apply top-safe-offset-4 rounded-xl border border-white/10 bg-black/50 p-1 text-xs text-white backdrop-invert-50;
+      @apply top-safe-offset-4 rounded-xl border border-white/10 bg-black/50 p-1 text-xs text-white backdrop-blur-2xl backdrop-contrast-50;
 
       appearance: base-select;
       bottom: calc(anchor(top) + var(--spacing) * 3.5);

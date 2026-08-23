@@ -1,10 +1,10 @@
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import type { TgpuRoot } from "typegpu";
 
-export function useContextRef(
+export const useContextRef = (
   root: TgpuRoot,
   canvasRef: RefObject<HTMLCanvasElement | null>,
-) {
+) => {
   const contextRef = useRef<GPUCanvasContext>(null);
 
   useLayoutEffect(() => {
@@ -19,4 +19,4 @@ export function useContextRef(
   }, [canvasRef, root]);
 
   return contextRef;
-}
+};

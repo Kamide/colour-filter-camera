@@ -1,3 +1,1 @@
-export function Spacer() {
-  return <div className="grow" aria-hidden />;
-}
+export const Spacer = () => <div className="grow" aria-hidden />;

@@ -1,7 +1,10 @@
 import { d, tgpu, type TgpuFn } from "typegpu";
 import { mul, type Mat3x3f, type Vec2f, type Vec3f } from "./matrix";
 
-function kelvinToXy(T: number): Vec2f {
+/**
+ * @see https://en.wikipedia.org/wiki/Planckian_locus#Approximation
+ */
+const kelvinToXy = (T: number): Vec2f => {
   let x: number;
 
   if (T >= 1667 && T <= 4000) {
@@ -21,8 +24,12 @@ function kelvinToXy(T: number): Vec2f {
   }
 
   return [x, -3 * x ** 2 + 2.87 * x - 0.275];
-}
+};
 
+/**
+ * This formula was simplified from the "CIE xyY color space" section of the Wikipedia article listed below by substituting `Z` with `0`.
+ * @see https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xyY_color_space
+ */
 const xyToXyz = ([x, y]: Vec2f): Vec3f => [x / y, 1, (1 - x - y) / y];
 
 const XYZ_TO_LMS_CAT16: Vec3f[] = [
@@ -51,6 +58,9 @@ const xyzToLms = ([x, y, z]: Vec3f): [number, number, number] => [
     XYZ_TO_LMS_CAT16[2][2] * z,
 ];
 
+/**
+ * @see https://en.wikipedia.org/wiki/Standard_illuminant#D65_values
+ */
 const D65_XYZ: Vec3f = [0.95047, 1, 1.08883];
 const D65_LMS = xyzToLms(D65_XYZ);
 
@@ -66,12 +76,15 @@ const XYZ_TO_RGB: Mat3x3f = [
   [0.0556434, -0.2040259, 1.0572252],
 ];
 
-export function temperatureFn(
+export const temperatureFn = (
   kelvin: number,
-): TgpuFn<(linear: d.Vec3f) => d.Vec3f> {
+): TgpuFn<(linear: d.Vec3f) => d.Vec3f> => {
   const targetXyz = xyToXyz(kelvinToXy(kelvin));
   const targetLms = xyzToLms(targetXyz);
 
+  /**
+   * @see https://en.wikipedia.org/wiki/Chromatic_adaptation#Von_Kries_transform
+   */
   const vonKriesGain = Array.from(
     { length: 3 },
     (_, i) => targetLms[i] / D65_LMS[i],
@@ -95,4 +108,4 @@ export function temperatureFn(
       r2 * linear.r + g2 * linear.g + b2 * linear.b,
     ),
   );
-}
+};

@@ -2,23 +2,21 @@ import tgpu, { d, std } from "typegpu";
 import { flat, type Mat3x3f, type Vec3f } from "./matrix";
 import { selectMat3x3f } from "./select";
 
-function brettel1997Params(
+const brettel1997Params = (
   separationPlaneNormal: Vec3f,
   transformationMatrixNegative: Mat3x3f,
   transformationMatrixPositive: Mat3x3f,
   daltonizationMatrix: Mat3x3f,
-) {
-  return {
-    separationPlaneNormal: d.vec3f(...separationPlaneNormal),
-    transformationMatrixNegative: d.mat3x3f(
-      ...flat(transformationMatrixNegative),
-    ),
-    transformationMatrixPositive: d.mat3x3f(
-      ...flat(transformationMatrixPositive),
-    ),
-    daltonizationMatrix: d.mat3x3f(...flat(daltonizationMatrix)),
-  };
-}
+) => ({
+  separationPlaneNormal: d.vec3f(...separationPlaneNormal),
+  transformationMatrixNegative: d.mat3x3f(
+    ...flat(transformationMatrixNegative),
+  ),
+  transformationMatrixPositive: d.mat3x3f(
+    ...flat(transformationMatrixPositive),
+  ),
+  daltonizationMatrix: d.mat3x3f(...flat(daltonizationMatrix)),
+});
 
 /**
  * Color vision deficiency (CVD) simulation and daltonization parameters are
@@ -82,30 +80,29 @@ const brettel1997ParamsFor = {
   ),
 };
 
-function simulationFn(params: ReturnType<typeof brettel1997Params>) {
-  return tgpu.fn(
+const simulationFn = (params: ReturnType<typeof brettel1997Params>) =>
+  tgpu.fn(
     [d.vec3f],
     d.vec3f,
   )((linear) => {
     const transformationMatrix = selectMat3x3f(
       params.transformationMatrixNegative,
       params.transformationMatrixPositive,
-      std.dot(linear.rgb, params.separationPlaneNormal) >= 0.0,
+      std.dot(linear, params.separationPlaneNormal) >= 0,
     );
 
     return transformationMatrix.mul(linear);
   });
-}
 
-function daltonizationFn(params: ReturnType<typeof brettel1997Params>) {
-  return tgpu.fn(
+const daltonizationFn = (params: ReturnType<typeof brettel1997Params>) =>
+  tgpu.fn(
     [d.vec3f],
     d.vec3f,
   )((linear) => {
     const transformationMatrix = selectMat3x3f(
       params.transformationMatrixNegative,
       params.transformationMatrixPositive,
-      std.dot(linear.rgb, params.separationPlaneNormal) >= 0.0,
+      std.dot(linear, params.separationPlaneNormal) >= 0,
     );
 
     const simulationMatrix = transformationMatrix.mul(linear);
@@ -114,7 +111,6 @@ function daltonizationFn(params: ReturnType<typeof brettel1997Params>) {
       params.daltonizationMatrix.mul(linear.sub(simulationMatrix)),
     );
   });
-}
 
 export const cvd = {
   simulation: {

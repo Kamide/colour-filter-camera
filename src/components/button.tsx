@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { cn } from "../lib/tailwind";
+import { cn } from "../lib/tailwind.ts";
 
 export const Button = ({
   type,

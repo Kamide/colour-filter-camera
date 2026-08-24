@@ -1,4 +1,4 @@
-import tgpu, { d } from "typegpu";
+import { d, tgpu } from "typegpu";
 
 export const identityVec3f = tgpu.fn(
   [d.vec3f],

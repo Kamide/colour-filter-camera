@@ -1,7 +1,7 @@
 import { linearToSrgb, srgbToLinear } from "@typegpu/color";
 import { useMemo } from "react";
-import tgpu, { common, d, std, type TgpuRoot } from "typegpu";
-import { getFilterByLabel, type FilterLabel } from "../lib/filter";
+import { common, d, std, tgpu, type TgpuRoot } from "typegpu";
+import { getFilterByLabel, type FilterLabel } from "../lib/filter.ts";
 
 export const useFilter = (root: TgpuRoot, filter: FilterLabel) => {
   "use no memo";

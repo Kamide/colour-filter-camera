@@ -1,4 +1,4 @@
-import { cn } from "../lib/tailwind";
+import { cn } from "../lib/tailwind.ts";
 
 const errorMessageOf = (error: unknown) => {
   for (let i = 0; i < 2; i++) {

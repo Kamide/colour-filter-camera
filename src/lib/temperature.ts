@@ -1,5 +1,5 @@
 import { d, tgpu, type TgpuFn } from "typegpu";
-import { mul, type Mat3x3f, type Vec2f, type Vec3f } from "./matrix";
+import { mul, type Mat3x3f, type Vec2f, type Vec3f } from "./matrix.ts";
 
 /**
  * @see https://en.wikipedia.org/wiki/Planckian_locus#Approximation

@@ -1,4 +1,4 @@
-import tgpu, { d } from "typegpu";
+import { d, tgpu } from "typegpu";
 import { dot, max, min } from "typegpu/std";
 
 export const average = tgpu.fn(

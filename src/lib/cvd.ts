@@ -1,6 +1,6 @@
-import tgpu, { d, std } from "typegpu";
-import { flat, type Mat3x3f, type Vec3f } from "./matrix";
-import { selectMat3x3f } from "./select";
+import { d, std, tgpu } from "typegpu";
+import { flat, type Mat3x3f, type Vec3f } from "./matrix.ts";
+import { selectMat3x3f } from "./select.ts";
 
 const brettel1997Params = (
   separationPlaneNormal: Vec3f,

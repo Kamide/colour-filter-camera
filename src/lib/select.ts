@@ -1,4 +1,4 @@
-import tgpu, { d, std } from "typegpu";
+import { d, std, tgpu } from "typegpu";
 
 export const selectMat3x3f = tgpu.fn(
   [d.mat3x3f, d.mat3x3f, d.bool],

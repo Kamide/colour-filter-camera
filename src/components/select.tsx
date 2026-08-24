@@ -1,6 +1,6 @@
 import type { ComponentProps, FC, JSX } from "react";
-import { supportsCustomizableSelect } from "../lib/css";
-import { cn } from "../lib/tailwind";
+import { supportsCustomizableSelect } from "../lib/css.ts";
+import { cn } from "../lib/tailwind.ts";
 import styles from "./select.module.css";
 
 export type OptionValue = Exclude<

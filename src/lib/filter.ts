@@ -1,10 +1,10 @@
-import type { MapKey, MapValue } from "../types/map";
-import { cvd } from "./cvd";
-import * as grayscale from "./grayscale";
-import { identityVec3f } from "./identity";
-import { temperatureFn } from "./temperature";
+import type { MapKey, MapValue } from "../types/map.ts";
+import { cvd } from "./cvd.ts";
+import * as grayscale from "./grayscale.ts";
+import { identityVec3f } from "./identity.ts";
+import { temperatureFn } from "./temperature.ts";
 
-export const filterLabelToFnMap = new Map([
+const filterLabelToFnMap = new Map([
   ["Passthrough", identityVec3f],
   ["Protanopia Simulation", cvd.simulation.protanopia],
   ["Deuteranopia Simulation", cvd.simulation.deuteranopia],

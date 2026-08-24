@@ -1,3 +1,5 @@
+export const pointerFine = matchMedia("pointer: fine");
+
 export const supportsCustomizableSelect = CSS.supports(
   "appearance: base-select",
 );

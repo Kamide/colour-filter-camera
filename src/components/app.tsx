@@ -5,7 +5,7 @@ import { useAutoHide } from "../hooks/auto-hide.ts";
 import { useFilter } from "../hooks/filter.ts";
 import { useFullscreenElement } from "../hooks/fullscreen.ts";
 import { useContextRef } from "../hooks/gpu.ts";
-import { supportsHas, supportsOpen } from "../lib/css.ts";
+import { pointerFine, supportsHas, supportsOpen } from "../lib/css.ts";
 import { filterLabels, type FilterLabel } from "../lib/filter.ts";
 import { getFps } from "../lib/fps.ts";
 import { cn } from "../lib/tailwind.ts";
@@ -33,7 +33,7 @@ export const App = () => {
     useAutoHide({
       parent: fullscreenElement,
       preventAutoHide: (child) =>
-        child.matches(":hover") ||
+        (pointerFine.matches && child.matches(":hover")) ||
         (supportsHas && supportsOpen && child.matches(":has(:open)")),
     });
 

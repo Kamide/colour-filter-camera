@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { Timer } from "../lib/timer.ts";
 
 export type AutoHideProps<Parent extends Element, Child extends Element> = {
   parent: Parent | null;
@@ -11,21 +12,16 @@ export const useAutoHide = <Parent extends Element, Child extends Element>({
   preventAutoHide = () => false,
   duration = 1500,
 }: AutoHideProps<Parent, Child>) => {
-  const timeoutRef = useRef<number | undefined>(undefined);
+  const timer = new Timer(duration);
   const [hidden, setHidden] = useState(false);
 
-  const resetTimeout = () => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = undefined;
-  };
-
   const hide = () => {
-    resetTimeout();
+    timer.reset();
     setHidden(true);
   };
 
   const show = () => {
-    resetTimeout();
+    timer.reset();
     setHidden(false);
   };
 
@@ -41,12 +37,20 @@ export const useAutoHide = <Parent extends Element, Child extends Element>({
       }
     };
 
-    const rescheduleAutoHide = () => {
+    const scheduleAutoHide = () => {
+      timer.set(conditionalAutoHide);
+    };
+
+    const showAndScheduleAutoHide = () => {
       show();
-      timeoutRef.current = setTimeout(conditionalAutoHide, duration);
+      scheduleAutoHide();
     };
 
     const controller = new AbortController();
+
+    controller.signal.addEventListener("abort", () => {
+      timer.reset();
+    });
 
     for (const event of [
       "focusin",
@@ -54,10 +58,12 @@ export const useAutoHide = <Parent extends Element, Child extends Element>({
       "pointerdown",
       "pointermove",
     ] satisfies (keyof HTMLElementEventMap)[]) {
-      parent.addEventListener(event, rescheduleAutoHide, {
+      parent.addEventListener(event, showAndScheduleAutoHide, {
         signal: controller.signal,
       });
     }
+
+    scheduleAutoHide();
 
     return () => {
       controller.abort();

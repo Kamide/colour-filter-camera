@@ -1,4 +1,5 @@
 import { cn } from "../lib/tailwind.ts";
+import { sleep } from "../lib/timer.ts";
 
 const errorMessageOf = (error: unknown) => {
   for (let i = 0; i < 2; i++) {
@@ -53,7 +54,7 @@ export const createErrorToast = (error: unknown) => {
     .animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200 })
     .finished.then(() => {
       toast.classList.remove("opacity-0");
-      return new Promise((resolve) => setTimeout(resolve, 2500));
+      return sleep(2500);
     })
     .then(
       () =>

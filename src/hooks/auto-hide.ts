@@ -31,6 +31,7 @@ export const useAutoHide = <Parent extends Element, Child extends Element>({
 
   const childRefCallback = (child: Child | null) => {
     if (parent == null || child == null) {
+      show();
       return;
     }
 
@@ -63,7 +64,5 @@ export const useAutoHide = <Parent extends Element, Child extends Element>({
     };
   };
 
-  const controlledHidden = parent == null ? false : hidden;
-
-  return { hidden: controlledHidden, childRefCallback };
+  return { hidden, childRefCallback };
 };

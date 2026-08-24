@@ -31,7 +31,7 @@ const filterLabelToFnMap = new Map([
 export type FilterLabel = MapKey<typeof filterLabelToFnMap>;
 export type FilterFn = MapValue<typeof filterLabelToFnMap>;
 
-export const filterLabels = [...filterLabelToFnMap.keys()];
+export const filterLabels = [...filterLabelToFnMap.keys()] as const;
 
 export const getFilterByLabel = (label: FilterLabel): FilterFn =>
   filterLabelToFnMap.get(label) ?? identityVec3f;

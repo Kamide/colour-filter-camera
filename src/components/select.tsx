@@ -17,7 +17,7 @@ export type SelectProps<T> = Omit<
   ComponentProps<"select">,
   "value" | "onChange"
 > & {
-  options: T[];
+  options: readonly T[];
   value?: T;
   onChange?: (option: T) => void;
   getOptionValue?: (option: T) => OptionValue;

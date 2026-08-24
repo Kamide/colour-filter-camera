@@ -1,10 +1,14 @@
 import { useRoot } from "@typegpu/react";
 import { CameraIcon, FullscreenIcon, ScreenShareIcon } from "lucide-react";
 import { useRef, useState } from "react";
+import { useAutoHide } from "../hooks/auto-hide.ts";
 import { useFilter } from "../hooks/filter.ts";
+import { useFullscreenElement } from "../hooks/fullscreen.ts";
 import { useContextRef } from "../hooks/gpu.ts";
+import { supportsHas, supportsOpen } from "../lib/css.ts";
 import { filterLabels, type FilterLabel } from "../lib/filter.ts";
 import { getFps } from "../lib/fps.ts";
+import { cn } from "../lib/tailwind.ts";
 import { Button } from "./button.tsx";
 import { Select } from "./select.tsx";
 import { Spacer } from "./spacer.tsx";
@@ -24,6 +28,14 @@ export const App = () => {
   const sizeRef = useRef<Size>({ width: 0, height: 0 });
   const [filter, setFilter] = useState<FilterLabel>("Passthrough");
   const { layout, renderPipeline } = useFilter(root, filter);
+  const fullscreenElement = useFullscreenElement();
+  const { hidden: controlsHidden, childRefCallback: controlsRefCallback } =
+    useAutoHide({
+      parent: fullscreenElement,
+      preventAutoHide: (child) =>
+        child.matches(":hover") ||
+        (supportsHas && supportsOpen && child.matches(":has(:open)")),
+    });
 
   const videoRefCallback = (video: HTMLVideoElement | null) => {
     if (video == null) {
@@ -129,13 +141,13 @@ export const App = () => {
   };
 
   const toggleFullscreen = () => {
-    if (document.fullscreenElement) {
+    if (fullscreenElement) {
       Promise.resolve()
         .then(() => document.exitFullscreen())
         .catch(createErrorToast);
     } else {
-      Promise.resolve(canvasRef.current)
-        .then((canvas) => canvas!.requestFullscreen())
+      Promise.resolve()
+        .then(() => document.body.requestFullscreen())
         .catch(createErrorToast);
     }
   };
@@ -146,7 +158,13 @@ export const App = () => {
         <canvas ref={canvasRef} className="size-full object-contain" />
         <video ref={videoRefCallback} autoPlay hidden playsInline />
       </div>
-      <div className="absolute bottom-0 flex w-full gap-2 overflow-auto pt-4 px-safe-offset-4 pb-safe-offset-4">
+      <div
+        ref={controlsRefCallback}
+        className={cn(
+          "absolute bottom-0 flex w-full gap-2 overflow-auto pt-4 px-safe-offset-4 pb-safe-offset-4 transition-all",
+          controlsHidden && "pointer-events-none translate-y-full opacity-0",
+        )}
+      >
         <Button onClick={startScreenShare}>
           <ScreenShareIcon aria-label="Screen Share" size={16} />
         </Button>

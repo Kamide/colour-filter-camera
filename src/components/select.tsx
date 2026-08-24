@@ -1,4 +1,5 @@
 import type { ComponentProps, FC, JSX } from "react";
+import { supportsCustomizableSelect } from "../lib/css";
 import { cn } from "../lib/tailwind";
 import styles from "./select.module.css";
 
@@ -68,7 +69,7 @@ export const Select = <T,>({
           : undefined
       }
       ref={
-        CSS.supports("appearance: base-select")
+        supportsCustomizableSelect
           ? (select) => {
               const disposes: (() => void)[] = [];
 
